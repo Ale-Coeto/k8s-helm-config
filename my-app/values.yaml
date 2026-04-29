@@ -9,7 +9,7 @@ replicaCount: 1
 image:
   repository: ghcr.io/ale-coeto/k8s-custom-nginx
   pullPolicy: IfNotPresent
-  tag: "d0175e8985c58073c51cbf554fa54a405473ad778b1cacc908719aea3724742a"
+  tag: "7fbf326c60873193b3babeb5d3619501faba7f16"
 
 
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
