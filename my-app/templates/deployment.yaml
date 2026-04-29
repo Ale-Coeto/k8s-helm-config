@@ -66,8 +66,11 @@ spec:
           {{- end }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+            - name: san-block-data
+              mountPath: /usr/share/nginx/html/data
+          # volumeMounts:
+          #   {{- toYaml . | nindent 12 }}
+          # {{- end }}
       {{- with .Values.volumes }}
       volumes:
         - name: san-block-data
