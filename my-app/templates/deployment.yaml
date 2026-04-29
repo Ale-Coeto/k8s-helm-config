@@ -5,9 +5,9 @@ metadata:
   labels:
     {{- include "my-app.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
   strategy:
     type: Recreate
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
@@ -42,12 +42,6 @@ spec:
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          env:
-            - name: MY_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "my-app.fullname" . }}-secret
-                  key: MY_SECRET
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
@@ -64,18 +58,20 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.volumeMounts }}
           volumeMounts:
             - name: san-block-data
               mountPath: /usr/share/nginx/html/data
-          # volumeMounts:
-          #   {{- toYaml . | nindent 12 }}
-          # {{- end }}
-      {{- with .Values.volumes }}
+            {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
       volumes:
         - name: san-block-data
           persistentVolumeClaim:
             claimName: {{ include "my-app.fullname" . }}-pvc
+        {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
